@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -69,8 +70,27 @@ public class Request extends Message {
      * Read an HTTP request from the given input stream and return it as a Request object.
      */
     public static Request parse(final InputStream input) throws IOException {
-        // Code here.
-        return null;
+    	BufferedReader clientRequest = new BufferedReader(new InputStreamReader (input));
+		
+		String requestString = clientRequest.readLine();
+		StringTokenizer tokenizer = new StringTokenizer(requestString);
+		HTTPMethodType method = HTTPMethodType.valueOf(tokenizer.nextToken());
+		String uri = tokenizer.nextToken();
+		String HTTP_version = tokenizer.nextToken();
+		
+		System.out.println("the request: " + method + " - " + uri + " - " + HTTP_version);
+		
+		Request request = new Request(method, uri, HTTP_version);
+		while (clientRequest.ready())
+        {
+            // Read the HTTP complete HTTP Query
+//            responseBuffer.append(requestString + "<BR>");
+			System.out.println(requestString);
+			requestString = clientRequest.readLine();
+			
+		}
+
+        return request;
     }
 
 }

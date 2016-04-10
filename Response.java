@@ -20,6 +20,10 @@ public class Response extends Message {
     private HTTPStatus status;
     private String httpVersion;
     private InputStream bodyInput;
+    private boolean isHTML;
+    
+    private String fileNotFoundResponse = "Content-Type: text/html\r\n";
+    private String rootDirectoryResponse = "hey hey";
     
     /**
      * Create a Response message that adheres to the given version of the HTTP.
@@ -69,6 +73,11 @@ public class Response extends Message {
     public void setBody(InputStream bodyInput) {
         this.bodyInput = bodyInput;
     }
+    
+    //Set whether the response should use "Content-Type: text/html"
+    public void setHTMLcontentType(boolean isHTML) {
+    	this.isHTML = isHTML;
+    }
         
     /**
      * Send the given Response via the given output stream.</br>
@@ -79,7 +88,26 @@ public class Response extends Message {
      * (The <code>Message</code> class defines the constant <code>CRLF</code> for this purpose.)
      */
     public static void send(final OutputStream output, final Response response) throws IOException   {
-        // Code here.
-    }
+    	DataOutputStream serverResponse = new DataOutputStream(output);
+    	
+    	serverResponse.writeBytes(response.getStartLine() + "\r\n");
 
+    	if (response.bodyInput != null) {
+    		System.out.println("THERE IS A BODY");
+    		
+    		if (response.isHTML)
+    			serverResponse.writeBytes("Content-Type: text/html\r\n");
+    		
+    		serverResponse.writeBytes("\r\n");
+    		int fileByte;
+    		
+    		while ((fileByte = response.bodyInput.read()) != -1) {
+                serverResponse.write(fileByte);
+            }
+    		response.bodyInput.close();
+    	} else {
+    		System.out.println("THERE IS NO BOBY!!!!!");
+    	}
+    	serverResponse.close();
+    }
 }
