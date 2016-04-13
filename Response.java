@@ -98,8 +98,9 @@ public class Response extends Message {
     			System.out.println("The server will return html!");
     			serverResponse.writeBytes("Content-Type: text/html\r\n");
     		}
+    		// set the Content-Length as the size of the file.
+    		serverResponse.writeBytes("Content-Length: " + response.bodyInput.available() + "\r\n\r\n");
     		
-    		serverResponse.writeBytes("\r\n");
     		int fileByte;
     		
     		while ((fileByte = response.bodyInput.read()) != -1) {
@@ -114,6 +115,7 @@ public class Response extends Message {
     			case NOT_FOUND:
     				System.out.println("Server could not find file specified by the server. 404 returned.");
     				serverResponse.writeBytes(response.getStartLine() + "\r\n");
+    				serverResponse.writeBytes("Content-Length: " + fileNotFoundResponse.length() + "\r\n");
     				serverResponse.writeBytes("Content-Type: text/html\r\n\r\n");
     				serverResponse.writeBytes(fileNotFoundResponse);
     				break;
@@ -122,6 +124,7 @@ public class Response extends Message {
     				System.out.println("NO CONTENT");
     				break;
     			default:
+    				serverResponse.writeBytes(response.getStartLine() + "\r\n");
     		}
     			
     	}

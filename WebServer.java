@@ -26,29 +26,25 @@ import java.io.InputStreamReader;
 public class WebServer extends Thread {
 	
 	Socket client = null;
-//	BufferedReader clientRequest = null;
-	DataOutputStream serverResponse = null;
 
-	// TODO : make it call this
+	//constructor, for use of the Thread class
+	//this is called each time a new socket is created by a client
     private WebServer(Socket newClient) {
     	client = newClient;
     }
     
-    // TODO delete this line
+    //start a new thread.
     public void start() {
     	super.start();
-    	System.out.println("We have a new connection bitch!!!");
     };
     
-public void run() {
-		
-	System.out.println( "Running, yeah, biach!");
+    // run method for this thread - reads request and compiles a response
+    public void run() {	
 		try {
-			System.out.println( "Client Details: "+ client.getInetAddress() + ":" + client.getPort());
+			System.out.println( "Client trying to access the server.");
+			System.out.println( "Client Details (<ip>:<port>): "+ client.getInetAddress() + ":" + client.getPort());
 
 			Request request = Request.parse(client.getInputStream());
-              
-            System.out.println("The HTTP request string is ....");
 
             GetRequestProcessor requestProcessor = new GetRequestProcessor();
 			Response response = requestProcessor.process(request);
@@ -65,13 +61,11 @@ public void run() {
      * In all cases, the server prints out the port that it is using.
      */
     public static void main(String argv[]) throws Exception {
-    	System.out.println("IT IS RUNNING BABY");
-    	
-		// Get the port number from the command line.
+		// Get the port number from the command line. Use 0 as the default value.
 		int port = argv.length>0 ?(new Integer(argv[0])).intValue():0;
-		ServerSocket Server = new ServerSocket (port, 10, InetAddress.getByName("127.0.0.1"));         
-		System.out.println ("TCPServer Waiting for client on port " + port);
-								
+		ServerSocket Server = new ServerSocket (port);         
+		System.out.println ("GETServer: Waiting for client requests on port - " + port);
+		System.out.println ("USE: <ipAdress+port>/path/to/file/<filename>");						
 		while(true) {	                	   	      	
 	        (new WebServer(Server.accept())).start();
         }

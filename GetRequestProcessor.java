@@ -28,15 +28,17 @@ public class GetRequestProcessor extends RequestProcessor {
     public Response process(final Request request) throws Exception {
     	Response response = new Response(request.getHTTPVersion());
     	
+    	//test if it can process this type of request
     	if (this.canProcess(request.getMethodType())) {
-			if (request.getURI().equals("/")) {
+			if (request.getURI().equals("")) {
 				response.setStatus(HTTPStatus.NO_CONTENT);
 			} else {
+				// get the file name (or file name path) after the '/' character.
 				String fileName = request.getURI().replaceFirst("/", "");
 				fileName = URLDecoder.decode(fileName);
 				File requestedFile = new File(fileName);
+				// test if there is a file of that name on the server.
 				if (requestedFile.isFile()){
-					System.out.println("WE HAVE A BODY!!!!!!!");
 					response.setStatus(HTTPStatus.OK);
 					byte[] fileData = new byte[(int) requestedFile.length()];
 					FileInputStream fileInputStream = new FileInputStream(requestedFile);
@@ -49,6 +51,7 @@ public class GetRequestProcessor extends RequestProcessor {
 				}
 			}
     	} else {
+    		System.out.println("THIS CANNOT BE PROCESSED - is not a GET request");
     		response.setStatus(HTTPStatus.METHOD_NOT_ALLOWED);
     	}
     	

@@ -72,22 +72,20 @@ public class Request extends Message {
     public static Request parse(final InputStream input) throws IOException {
     	BufferedReader clientRequest = new BufferedReader(new InputStreamReader (input));
 		
+    	Request request = null;
+    	
+    	// read the request string received from client.
 		String requestString = clientRequest.readLine();
-		StringTokenizer tokenizer = new StringTokenizer(requestString);
-		HTTPMethodType method = HTTPMethodType.valueOf(tokenizer.nextToken());
-		String uri = tokenizer.nextToken();
-		String HTTP_version = tokenizer.nextToken();
-		
-		System.out.println("the request: " + method + " - " + uri + " - " + HTTP_version);
-		
-		Request request = new Request(method, uri, HTTP_version);
-		while (clientRequest.ready())
-        {
-            // Read the HTTP complete HTTP Query
-//            responseBuffer.append(requestString + "<BR>");
-			System.out.println(requestString);
-			requestString = clientRequest.readLine();
-			
+		if (requestString != null) {
+			StringTokenizer tokenizer = new StringTokenizer(requestString);
+			HTTPMethodType method = HTTPMethodType.valueOf(tokenizer.nextToken());
+			String uri = tokenizer.nextToken();
+			String HTTP_version = tokenizer.nextToken();
+						
+			request = new Request(method, uri, HTTP_version);
+		} else {
+			// create an empty request if a request with no body comes through.
+			request = new Request(HTTPMethodType.GET, "", "");
 		}
 
         return request;
