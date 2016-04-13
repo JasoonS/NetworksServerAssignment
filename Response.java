@@ -22,9 +22,8 @@ public class Response extends Message {
     private InputStream bodyInput;
     private boolean isHTML;
     
-    private String fileNotFoundResponse = "Content-Type: text/html\r\n";
-    private String rootDirectoryResponse = "hey hey";
-    
+    private static String fileNotFoundResponse = "<html><title>Jason's Java Server</title><body><h2>404 file not found ERROR</h2><p>pleaase type in your desired file name carefully</P</body></html>";
+
     /**
      * Create a Response message that adheres to the given version of the HTTP.
      */
@@ -90,13 +89,15 @@ public class Response extends Message {
     public static void send(final OutputStream output, final Response response) throws IOException   {
     	DataOutputStream serverResponse = new DataOutputStream(output);
     	
-    	serverResponse.writeBytes(response.getStartLine() + "\r\n");
-
+    	// check if the bodyInput has been set (ie if the requested file has been found).
     	if (response.bodyInput != null) {
-    		System.out.println("THERE IS A BODY");
+    		serverResponse.writeBytes(response.getStartLine() + "\r\n");
     		
-    		if (response.isHTML)
+    		// test if the file that is being requested is html
+    		if (response.isHTML) {
+    			System.out.println("The server will return html!");
     			serverResponse.writeBytes("Content-Type: text/html\r\n");
+    		}
     		
     		serverResponse.writeBytes("\r\n");
     		int fileByte;
@@ -104,9 +105,25 @@ public class Response extends Message {
     		while ((fileByte = response.bodyInput.read()) != -1) {
                 serverResponse.write(fileByte);
             }
+    		
+    		System.out.println("Server returned a file at to the client.");
     		response.bodyInput.close();
     	} else {
-    		System.out.println("THERE IS NO BOBY!!!!!");
+    		switch (response.getStatus()){
+    			// file NOT_FOUND - say no more... (>:0)
+    			case NOT_FOUND:
+    				System.out.println("Server could not find file specified by the server. 404 returned.");
+    				serverResponse.writeBytes(response.getStartLine() + "\r\n");
+    				serverResponse.writeBytes("Content-Type: text/html\r\n\r\n");
+    				serverResponse.writeBytes(fileNotFoundResponse);
+    				break;
+    			// NO_content means that the server received an empty request - it basically ignores.
+    			case NO_CONTENT:
+    				System.out.println("NO CONTENT");
+    				break;
+    			default:
+    		}
+    			
     	}
     	serverResponse.close();
     }
