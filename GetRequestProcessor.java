@@ -1,10 +1,6 @@
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.net.URLDecoder;
-//
-import java.nio.charset.StandardCharsets;
 /**
  * A GetRequestProcessor contains the logic necessary for handling HTTP GET requests.
  * 
@@ -45,6 +41,7 @@ public class GetRequestProcessor extends RequestProcessor {
 					fileInputStream.read(fileData);
 					response.setBody(fileData);
 					response.setHTMLcontentType(fileName.endsWith(".htm") || fileName.endsWith(".html"));
+					fileInputStream.close();
 				}
 				else {
 					response.setStatus(HTTPStatus.NOT_FOUND);	

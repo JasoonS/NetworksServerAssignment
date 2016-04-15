@@ -3,8 +3,6 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-//
-import java.util.List;
 /**
  * 
  * Represents a Response type of HTTP message.</br>
@@ -28,7 +26,7 @@ public class Response extends Message {
      * Create a Response message that adheres to the given version of the HTTP.
      */
     public Response(final String httpVersion) {
-        this.status = status;
+//        this.status = status;
         this.httpVersion = httpVersion;
     }
     

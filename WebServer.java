@@ -1,14 +1,6 @@
 //import java.net.ServerSocket;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URLDecoder;
-import java.util.StringTokenizer;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 //import java.net.InetAddress;
 /**
  * Simple Web Server.
@@ -65,11 +57,11 @@ public class WebServer extends Thread {
 		int port = argv.length>0 ?(new Integer(argv[0])).intValue():0;
 		ServerSocket Server = new ServerSocket (port);         
 		System.out.println ("GETServer: Waiting for client requests on port - " + port);
-		System.out.println ("USE: <ipAdress+port>/path/to/file/<filename>");						
-		while(true) {	                	   	      	
+		System.out.println ("USE: <ipAdress+port>/path/to/file/<filename>");
+		System.out.println ("PRESS Ctrl+C to terminate the server.");
+		while(true) {               	   	      	
 	        (new WebServer(Server.accept())).start();
         }
-
 	}
 
 }
