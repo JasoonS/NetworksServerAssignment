@@ -88,7 +88,7 @@ public class Response extends Message {
      */
     public static void send(final OutputStream output, final Response response) throws IOException   {
     	DataOutputStream serverResponse = new DataOutputStream(output);
-    	
+
     	// check if the bodyInput has been set (ie if the requested file has been found).
     	if (response.bodyInput != null) {
     		serverResponse.writeBytes(response.getStartLine() + "\r\n");
